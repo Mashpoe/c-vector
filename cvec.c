@@ -6,7 +6,7 @@
 //  Copyright © 2019 Mashpoe. All rights reserved.
 //
 
-#include "cvec2.h"
+#include "cvec.h"
 #include <string.h>
 
 typedef struct vector_data vector_data;
