@@ -50,17 +50,10 @@ size_t VECTOR_GET_ALLOC(vector v) {
 }
 
 vector_data* VECTOR_REALLOC(vector_data* v_data) {
-	if (v_data->alloc == 0) {
-		vector_data* new_v_data = VECTOR_ALLOC(1, v_data->size);
-		new_v_data->size = v_data->size;
-		new_v_data->alloc = 1;
-		new_v_data->length = 0;
-		return new_v_data;
-	} else {
-		size_t new_alloc = v_data->alloc * 2;
-		vector_data* new_v_data = realloc(v_data, sizeof(vector_data) + new_alloc * v_data->size);
-		return new_v_data;
-	}
+	size_t new_alloc = (v_data->alloc == 0) ? 1 : v_data->alloc * 2;
+	vector_data* new_v_data = realloc(v_data, sizeof(vector_data) + new_alloc * v_data->size);
+	new_v_data->alloc = new_alloc;
+	return new_v_data;
 }
 
 bool VECTOR_HAS_SPACE(vector_data* v_data) {
@@ -72,9 +65,8 @@ void* VECTOR_ADD(vector* v) {
 	
 	if (!VECTOR_HAS_SPACE(v_data)) {
 		v_data = VECTOR_REALLOC(v_data);
+		*v = v_data->buff;
 	}
-	
-	*v = v_data->buff;
 	
 	return (void*)&v_data->buff[v_data->size * v_data->length++];
 }
