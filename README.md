@@ -77,7 +77,7 @@ Here is a cheat sheet for using this library:
 | create a vector with a type of `type`        |`type* vec_a = _vector_create(type);`    |                         |
 | add `item` to the vector `vec_a`             |`_vector_add(&vec_a, type) = item;`      | yes                     |
 | insert `item` into `vec_a` at index `9`      |`_vector_insert(&vec_a, type, 9) = item;`| yes                     |
-| erase `3` items from `vec_a` at index `4`    |`_vector_erase(&vec_a, 3, 4);`           | yes                     |
+| erase `4` items from `vec_a` at index `3`    |`_vector_erase(&vec_a, 3, 4);`           | yes                     |
 | remove item at index `3` from `vec_a`        |`_vector_remove(&vec_a, 3);`             | yes                     |
 | get the number of items in `vec_a`           |`int num_items = vector_size(vec_a);`    | no                      |
 | get the amount of allocated memory in `vec_a`|`int alloc_amt = vector_alloc(vec_a);`   | no                      |
