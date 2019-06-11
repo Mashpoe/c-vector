@@ -1,5 +1,5 @@
 # C Vector Library
-A simple vector library written in C. It can store any type, and it can be accessed like a traditional array, e.g. `arr[i]`. It has methods for adding, inserting, and removing elements. 
+A simple vector library written in C. It can store any type, it can be accessed like a traditional array, e.g. `arr[i]`, and it has methods for adding, inserting, and removing elements. 
 
 You can easily create a vector like so:
 
@@ -32,7 +32,7 @@ This design was inspired by anitrez's [Simple Dynamic Strings](https://github.co
 
 # Usage
 
-Just because these vectors can be accessed and modified like regular arrays doesn't mean that they should be used the same in all cases.
+Just because these vectors can be accessed and modified like regular arrays doesn't mean they should be treated the same in all cases.
 
 Because of the header data that's obstructed from the user, these vectors can only be properly freed by calling `vector_free(vector)`.
 
@@ -72,24 +72,24 @@ int num_ages = vector_size(age_vec); // just pass the `int*` without taking its 
 
 Here is a cheat sheet for using this library:
 
-| Action                                        | Code                                      | Changes pointer location? |
-|-----------------------------------------------|-------------------------------------------|---------------------------|
-| create a vector with a type of `type`         | `type* vec_a = _vector_create(type);`     |                           |
-| add `item` to the vector `vec_a`              | `_vector_add(&vec_a, type) = item;`       | yes                       |
-| insert `item` into `vec_a` at index `9`       | `_vector_insert(&vec_a, type, 9) = item;` | yes                       |
-| erase `3` items from `vec_a` at index `4`     | `_vector_erase(&vec_a, 3, 4);`            | yes                       |
-| remove item at index `3` from `vec_a`         | `_vector_remove(&vec_a, 3);`              | yes                       |
-| get the number of items in `vec_a`            | `int num_items = vector_size(vec_a);`     | no                        |
-| get the amount of allocated memory in `vec_a` | `int alloc_amt = vector_alloc(vec_a);`    | no                        |
+| Action                                       | Code                                    | Changes memory address? |
+|----------------------------------------------|-----------------------------------------|-------------------------|
+| create a vector with a type of `type`        |`type* vec_a = _vector_create(type);`    |                         |
+| add `item` to the vector `vec_a`             |`_vector_add(&vec_a, type) = item;`      | yes                     |
+| insert `item` into `vec_a` at index `9`      |`_vector_insert(&vec_a, type, 9) = item;`| yes                     |
+| erase `3` items from `vec_a` at index `4`    |`_vector_erase(&vec_a, 3, 4);`           | yes                     |
+| remove item at index `3` from `vec_a`        |`_vector_remove(&vec_a, 3);`             | yes                     |
+| get the number of items in `vec_a`           |`int num_items = vector_size(vec_a);`    | no                      |
+| get the amount of allocated memory in `vec_a`|`int alloc_amt = vector_alloc(vec_a);`   | no                      |
 
 # Macros
 
 This library defines some macros in order to simulate the template arguments that make vectors possible in C++. All macros have an `_` prefix to distinguish them from their respective regular library functions.
 
-| Macro                                  | Expands to:                               |
-|----------------------------------------|-------------------------------------------|
-| `#define _vector_create(type)`         | `(vector_create(sizeof(type)))`           |
-| `#define _vector_add(v, type)`         | `(*(type*)vector_add((vector*)v))`        |
-| `#define _vector_insert(v, type, pos)` | `(*(type)vector_insert((vector*)v, pos))` |
-| `#define _vector_erase(v, pos, len)`   | `(vector_erase((vector*)v, pos, len))`    |
-| `#define _vector_remove(v, pos)`       | `(vector_remove((vector*)v, pos))`        |
+| Macro                                | Expands to:                             |
+|--------------------------------------|-----------------------------------------|
+|`#define _vector_create(type)`        |`(vector_create(sizeof(type)))`          |
+|`#define _vector_add(v, type)`        |`(*(type*)vector_add((vector*)v))`       |
+|`#define _vector_insert(v, type, pos)`|`(*(type)vector_insert((vector*)v, pos))`|
+|`#define _vector_erase(v, pos, len)`  |`(vector_erase((vector*)v, pos, len))`   |
+|`#define _vector_remove(v, pos)`      |`(vector_remove((vector*)v, pos))`       |
