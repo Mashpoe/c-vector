@@ -1,16 +1,17 @@
 //
-//  cvec.c
+//  vec.h
 //
 //  Created by Mashpoe on 2/26/19.
 //
 
-#ifndef cvec_h
-#define cvec_h
+#ifndef vec_h
+#define vec_h
 
 #include <stdlib.h>
 #include <stdbool.h>
 
 typedef void* vector;
+typedef size_t vec_size;
 
 typedef int*	vec_int;
 typedef char*	vec_char;
@@ -29,14 +30,14 @@ void vector_free(vector v);
 
 void* vector_add(vector* v);
 
-void* vector_insert(vector* v, size_t pos);
+void* vector_insert(vector* v, vec_size pos);
 
-void vector_erase(vector* v, size_t pos, size_t len);
+void vector_erase(vector* v, vec_size pos, vec_size len);
 
-void vector_remove(vector* v, size_t pos);
+void vector_remove(vector* v, vec_size pos);
 
-size_t vector_size(vector v);
+vec_size vector_size(vector v);
 
-size_t vector_get_alloc(vector v);
+vec_size vector_get_alloc(vector v);
 
-#endif /* cvec_h */
+#endif /* vec_h */
