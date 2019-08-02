@@ -90,7 +90,7 @@ void _vector_erase(vector* v, vec_type_size type_size, vec_size pos, vec_size le
 	// anyone who puts in a bad index can face the consequences on their own
 	memmove(&v_data->buff[pos * type_size],
 			&v_data->buff[(pos+len) * type_size],
-			(v_data->length - pos) * type_size);
+			(v_data->length - pos - len) * type_size);
 	
 	v_data->length -= len;
 }
