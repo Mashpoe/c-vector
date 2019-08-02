@@ -18,24 +18,23 @@ typedef int*	vec_int;
 typedef char*	vec_char;
 
 // shortcut defines
-#define _vector_create(type)			    (vector_create(sizeof(type)))
 // v is a vector* (aka void**)
-#define _vector_add(v, type)			    (*(type*)vector_add((vector*)v))
-#define _vector_insert(v, type, pos)	(*(type)vector_insert((vector*)v, pos))
-#define _vector_erase(v, pos, len)		(vector_erase((vector*)v, pos, len))
-#define _vector_remove(v, pos)			  (vector_remove((vector*)v, pos))
+#define vector_add(v, type)				(*(type*)_vector_add((vector*)v, sizeof(type)))
+#define vector_insert(v, type, pos)		(*(type)_vector_insert((vector*)v, sizeof(type), pos))
+#define vector_erase(v, pos, len)		(_vector_erase((vector*)v, sizeof(type), pos, len))
+#define vector_remove(v, pos)			(_vector_remove((vector*)v, sizeof(type), pos))
 
-vector vector_create(vec_type_size type_size);
+vector vector_create(void);
 
 void vector_free(vector v);
 
-void* vector_add(vector* v);
+void* _vector_add(vector* v, vec_type_size type_size);
 
-void* vector_insert(vector* v, vec_size pos);
+void* _vector_insert(vector* v, vec_type_size type_size, vec_size pos);
 
-void vector_erase(vector* v, vec_size pos, vec_size len);
+void _vector_erase(vector* v, vec_type_size type_size, vec_size pos, vec_size len);
 
-void vector_remove(vector* v, vec_size pos);
+void _vector_remove(vector* v, vec_type_size type_size, vec_size pos);
 
 vec_size vector_size(vector v);
 
