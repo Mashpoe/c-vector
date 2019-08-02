@@ -42,7 +42,7 @@ Since the header is stored in the same location as the the vector's elements, th
 int* baz = vector_create();
 
 // adds the number "5" to the vector
-vector_add(&baz) = 5; // takes the address of the `int*` in case the pointer needs to be changed
+vector_add(&baz, int) = 5; // takes the address of the `int*` in case the pointer needs to be changed
 ```
 
 Because of these differences, it's probably a good idea to make a way to distinguish vectors from regular arrays.
@@ -74,7 +74,7 @@ Here is a cheat sheet for using this library:
 
 | Action                                       | Code                                    | Changes memory address? |
 |----------------------------------------------|-----------------------------------------|-------------------------|
-| create a vector with a type of `type`        |`type* vec_a = _vector_create(type);`    |                         |
+| create a vector                              |`type* vec_a = vector_create();`         | N/A                     |
 | add `item` to the vector `vec_a`             |`vector_add(&vec_a, type) = item;`       | yes                     |
 | insert `item` into `vec_a` at index `9`      |`vector_insert(&vec_a, type, 9) = item;` | yes                     |
 | erase `4` items from `vec_a` at index `3`    |`vector_erase(&vec_a, type, 3, 4);`      | yes                     |
