@@ -72,13 +72,15 @@ int num_ages = vector_size(age_vec); // just pass the `int*` without taking its 
 
 Here is a cheat sheet for using this library:
 
+**NOTE:** if you keep getting segfaults, make sure you're correctly passing the vector to the library functions. Some functions take a normal vector argument, e.g. `vec`, while other functions can change the vector's memory location and thus require the pointer address, e.g. `&vec`.
+
 | Action                                       | Code                                    | Changes memory address? |
 |----------------------------------------------|-----------------------------------------|-------------------------|
 | create a vector                              |`type* vec_a = vector_create();`         | N/A                     |
 | add `item` to the vector `vec_a`             |`vector_add(&vec_a, type) = item;`       | yes                     |
 | insert `item` into `vec_a` at index `9`      |`vector_insert(&vec_a, type, 9) = item;` | yes                     |
-| erase `4` items from `vec_a` at index `3`    |`vector_erase(&vec_a, type, 3, 4);`      | yes                     |
-| remove item at index `3` from `vec_a`        |`vector_remove(&vec_a, type, 3);`        | yes                     |
+| erase `4` items from `vec_a` at index `3`    |`vector_erase(vec_a, type, 3, 4);`       | yes                     |
+| remove item at index `3` from `vec_a`        |`vector_remove(vec_a, type, 3);`         | yes                     |
 | get the number of items in `vec_a`           |`int num_items = vector_size(vec_a);`    | no                      |
 | get the amount of allocated memory in `vec_a`|`int alloc_amt = vector_alloc(vec_a);`   | no                      |
 
