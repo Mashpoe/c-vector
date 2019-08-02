@@ -19,10 +19,10 @@ typedef char*	vec_char;
 
 // shortcut defines
 // v is a vector* (aka void**)
-#define vector_add(v, type)				(*(type*)_vector_add((vector*)v, sizeof(type)))
-#define vector_insert(v, type, pos)		(*(type)_vector_insert((vector*)v, sizeof(type), pos))
-#define vector_erase(v, pos, len)		(_vector_erase((vector*)v, sizeof(type), pos, len))
-#define vector_remove(v, pos)			(_vector_remove((vector*)v, sizeof(type), pos))
+#define vector_add(v, type)					(*(type*)_vector_add((vector*)v, sizeof(type)))
+#define vector_insert(v, type, pos)			(*(type)_vector_insert((vector*)v, sizeof(type), pos))
+#define vector_erase(v, type, pos, len)		(_vector_erase((vector*)v, sizeof(type), pos, len))
+#define vector_remove(v, type, pos)			(_vector_remove((vector*)v, sizeof(type), pos))
 
 vector vector_create(void);
 
