@@ -10,34 +10,59 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef void* vector;
-typedef size_t vec_size; // stores the number of elements
-typedef unsigned char vec_type_size; // stores the number of bytes for a type
+typedef void* vector; // you can't use this to store vectors, it's just used internally as a generic type
+typedef size_t vec_size_t; // stores the number of elements
+typedef unsigned char vec_type_t; // stores the number of bytes for a type
 
 typedef int*	vec_int;
 typedef char*	vec_char;
 
+#ifndef _MSC_VER
+
 // shortcut defines
-// v is a vector* (aka void**)
-#define vector_add(v, type)					(*(type*)_vector_add((vector*)v, sizeof(type)))
-#define vector_insert(v, type, pos)			(*(type)_vector_insert((vector*)v, sizeof(type), pos))
-#define vector_erase(v, type, pos, len)		(_vector_erase((vector*)v, sizeof(type), pos, len))
-#define vector_remove(v, type, pos)			(_vector_remove((vector*)v, sizeof(type), pos))
+
+// vec_addr is a vector* (aka type**)
+#define vector_add_asg(vec_addr)			(*(typeof(*vec_addr))(_vector_add((vector*)vec_addr, sizeof(typeof(**vec_addr)))))
+#define vector_insert_asg(vec_addr, pos)	(*(typeof(*vec_addr))(_vector_insert((vector*)vec_addr, sizeof(typeof(**vec_addr)), pos)))
+
+#define vector_add(vec_addr, value)			(vector_add_asg(vec_addr) = value)
+#define vector_insert(vec_addr, pos, value)	(vector_insert_asg(vec_addr, pos) = value)
+
+// vec is a vector (aka type*)
+#define vector_erase(vec, pos, len)			(_vector_erase((vector*)vec, sizeof(typeof(*vec)), pos, len))
+#define vector_remove(vec, pos)				(_vector_remove((vector*)vec, sizeof(typeof(*vec)), pos))
+
+#else
+
+// shortcut defines
+
+// vec is a vector* (aka type**)
+#define vector_add_asg(vec_addr, type)				(*(type*)_vector_add((vector*)vec_addr, sizeof(type)))
+#define vector_insert_asg(vec_addr, type, pos)		(*(type*)_vector_insert((vector*)vec_addr, sizeof(type), pos))
+
+#define vector_add(vec_addr, type, value)			(vector_add_asg(vec_addr, type) = value)
+#define vector_insert(vec_addr, type, pos, value)	(vector_insert_asg(vec_addr, type, pos) = value)
+
+// vec is a vector (aka type*)
+#define vector_erase(vec, type, pos, len)			(_vector_erase((vector*)vec, sizeof(type), pos, len))
+#define vector_remove(vec, type, pos)				(_vector_remove((vector*)vec, sizeof(type), pos))
+
+#endif
 
 vector vector_create(void);
 
-void vector_free(vector v);
+void vector_free(vector vec);
 
-void* _vector_add(vector* v, vec_type_size type_size);
+void* _vector_add(vector* vec_addr, vec_type_t type_size);
 
-void* _vector_insert(vector* v, vec_type_size type_size, vec_size pos);
+void* _vector_insert(vector* vec_addr, vec_type_t type_size, vec_size_t pos);
 
-void _vector_erase(vector* v, vec_type_size type_size, vec_size pos, vec_size len);
+void _vector_erase(vector* vec_addr, vec_type_t type_size, vec_size_t pos, vec_size_t len);
 
-void _vector_remove(vector* v, vec_type_size type_size, vec_size pos);
+void _vector_remove(vector* vec_addr, vec_type_t type_size, vec_size_t pos);
 
-vec_size vector_size(vector v);
+vec_size_t vector_size(vector vec);
 
-vec_size vector_get_alloc(vector v);
+vec_size_t vector_get_alloc(vector vec);
 
 #endif /* vec_h */
