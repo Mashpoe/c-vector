@@ -22,11 +22,11 @@ typedef char*	vec_char;
 // shortcut defines
 
 // vec_addr is a vector* (aka type**)
-#define vector_add_asg(vec_addr)			(*(typeof(*vec_addr))(_vector_add((vector*)vec_addr, sizeof(typeof(**vec_addr)))))
-#define vector_insert_asg(vec_addr, pos)	(*(typeof(*vec_addr))(_vector_insert((vector*)vec_addr, sizeof(typeof(**vec_addr)), pos)))
+#define vector_add_asg(vec_addr)			((typeof(*vec_addr))(_vector_add((vector*)vec_addr, sizeof(typeof(**vec_addr)))))
+#define vector_insert_asg(vec_addr, pos)	((typeof(*vec_addr))(_vector_insert((vector*)vec_addr, sizeof(typeof(**vec_addr)), pos)))
 
-#define vector_add(vec_addr, value)			(vector_add_asg(vec_addr) = value)
-#define vector_insert(vec_addr, pos, value)	(vector_insert_asg(vec_addr, pos) = value)
+#define vector_add(vec_addr, value)			(*vector_add_asg(vec_addr) = value)
+#define vector_insert(vec_addr, pos, value)	(*vector_insert_asg(vec_addr, pos) = value)
 
 // vec is a vector (aka type*)
 #define vector_erase(vec, pos, len)			(_vector_erase((vector*)vec, sizeof(typeof(*vec)), pos, len))
@@ -37,11 +37,11 @@ typedef char*	vec_char;
 // shortcut defines
 
 // vec is a vector* (aka type**)
-#define vector_add_asg(vec_addr, type)				(*(type*)_vector_add((vector*)vec_addr, sizeof(type)))
-#define vector_insert_asg(vec_addr, type, pos)		(*(type*)_vector_insert((vector*)vec_addr, sizeof(type), pos))
+#define vector_add_asg(vec_addr, type)				((type*)_vector_add((vector*)vec_addr, sizeof(type)))
+#define vector_insert_asg(vec_addr, type, pos)		((type*)_vector_insert((vector*)vec_addr, sizeof(type), pos))
 
-#define vector_add(vec_addr, type, value)			(vector_add_asg(vec_addr, type) = value)
-#define vector_insert(vec_addr, type, pos, value)	(vector_insert_asg(vec_addr, type, pos) = value)
+#define vector_add(vec_addr, type, value)			(*vector_add_asg(vec_addr, type) = value)
+#define vector_insert(vec_addr, type, pos, value)	(*vector_insert_asg(vec_addr, type, pos) = value)
 
 // vec is a vector (aka type*)
 #define vector_erase(vec, type, pos, len)			(_vector_erase((vector*)vec, sizeof(type), pos, len))
