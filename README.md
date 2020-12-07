@@ -7,7 +7,7 @@ You can easily create a vector like so:
 int* num_vec = vector_create();
 ```
 
-You can create vectors that store a variety of types by simply changing the pointer type:
+You can store different data types in vectors by simply modifying the pointer type:
 
 ```c
 // vector of chars
@@ -20,7 +20,7 @@ int* int_vec = vector_create();
 struct foo* foo_vec = vector_create();
 ```
 
-As stated above, you can access/modify items in a vector using the `[]` operator:
+A vector's elements can be accessed/modified using the `[]` operator:
 
 ```c
 char* vec_str = vector_create();
@@ -55,9 +55,9 @@ Note: the `vector` type is just an alias for `void*` defined in `vec.h`.
 
 # How It Works
 
-These vectors can be manipulated in a similar manner to C++ vectors; their elements can be accessed via the `[]` operator and elements may be added or removed with simple library calls.
+These vectors can be manipulated in a similar manner to C++ vectors; their elements can be accessed via the `[]` operator and elements may be added or removed through the use of simple library calls.
 
-This works because these vectors are stored in memory alongside a special header, which keeps track of the number of elements and the amount of allocated memory:
+This works because these vectors are stored directly alongside special header in memory, which keeps track of the vector's size and capacity:
 
     +--------+-------------+
     | Header | Vector data |
@@ -67,7 +67,7 @@ This works because these vectors are stored in memory alongside a special header
 
 This design was inspired by anitrez's [Simple Dynamic Strings](https://github.com/antirez/sds/).
 
-This library performs compile-time type checks via the preprocessor, which make sure the pointer type of a vector corresponds to the type of its contents. The type checks are done using GCC's `typeof` operator, which is only implemented in some compilers, such as Clang and GCC, and will not work under the Visual Studio C compiler.
+This library uses the preprocessor to perform compile-time type checks, which make sure the pointer type of a vector corresponds to the type of its contents. The type checks are done using GCC's `typeof` operator, which is only implemented in some compilers, such as Clang and GCC, and will not work under the Visual Studio C compiler.
 
 If you're using this library for a C++ project, you can swap each occurrence of `typeof` with `decltype`, which *is* standardized in C++.
 
@@ -133,7 +133,7 @@ Some functions take a normal vector argument, e.g. `vec`, while other functions 
 
 # Visual Studio Reference Sheet
 
-Because the Visual Studio C compiler doesn't support the `typeof` operator, which is used for static type comparisons in the library's macros, you have to use a slightly different set of macros. Unfortunatley, this also means you won't get an error when passing incorrect types to these macros, so if you're getting segfaults, make sure you are properly using `vec` and `&vec` for their corresponding calls.
+Because the Visual Studio C compiler doesn't support the `typeof` operator, which is used for static type checks in the library's macros, you have to use a slightly different set of macros. Unfortunatley, this also means you won't get an error when passing incorrect types to these macros, so if you're getting segfaults, make sure you are properly using `vec` and `&vec` for their corresponding calls.
 
 | Action                                       | Code                                    | Changes memory address? |
 |----------------------------------------------|-----------------------------------------|-------------------------|
@@ -145,9 +145,9 @@ Because the Visual Studio C compiler doesn't support the `typeof` operator, whic
 | get the number of items in `vec_a`           |`int num_items = vector_size(vec_a);`    | no                      |
 | get the amount of allocated memory in `vec_a`|`int alloc_amt = vector_alloc(vec_a);`   | no                      |
 
-# What About Data Structures?
+# What About Structures?
 
-If you have a vector storing some kind of data structure, you can't initialize new elements of the vector like you would a variable, e.g. `{ a, b, c }`. To get around this, there's a set of special macros defined for both the Visual Studio compiler and compilers that support the `typeof` operator. These macros allow you to have more control over how you initialize a new element of a vector.
+If you have a vector storing some kind of structure, you can't initialize new elements of the vector like you would a variable, e.g. `{ a, b, c }`. To get around this, there's a set of special macros defined for both the Visual Studio compiler and compilers that support the `typeof` operator. These macros allow you to have more control over how you initialize a new element of a vector.
 
 Here are some examples:
 
@@ -156,7 +156,7 @@ typedef struct { ... } foo;
 
 foo* foo_vec = vector_create();
 
-// the lifetime of temp is not guaranteed to be long; don't use this outside of initialization
+// the lifetime of temp is not guaranteed to be long; don't use this pointer after instantiation
 foo* temp = vector_add_asg(&foo_vec);
 temp->a = 1;
 temp->b = 2;
