@@ -10,7 +10,7 @@
 typedef struct vector_data vector_data;
 
 struct vector_data {
-	vec_size_t alloc;				// stores the number of bytes allocated
+	vec_size_t alloc; // stores the number of bytes allocated
 	vec_size_t length;
 	char buff[]; // use char to store bytes of an unknown type
 };
