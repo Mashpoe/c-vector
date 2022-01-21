@@ -16,7 +16,7 @@ char* char_vec = vector_create();
 // vector of integers
 int* int_vec = vector_create();
 
-// you can even store data structures!
+// you can even store structs!
 struct foo* foo_vec = vector_create();
 ```
 
