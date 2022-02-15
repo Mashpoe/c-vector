@@ -126,8 +126,8 @@ Some functions take a normal vector argument, e.g. `vec`, while other functions 
 | create a vector                              |`type* vec_a = vector_create();`         | N/A                     |
 | add `item` to the vector `vec_a`             |`vector_add(&vec_a, item);`              | yes                     |
 | insert `item` into `vec_a` at index `9`      |`vector_insert(&vec_a, 9, item)`         | yes                     |
-| erase `4` items from `vec_a` at index `3`    |`vector_erase(vec_a, 3, 4);`             | no (moves elements)     |
-| remove item at index `3` from `vec_a`        |`vector_remove(vec_a, 3);`               | no (moves elements)     |
+| erase `4` items from `vec_a` at index `3`    |`vector_erase(&vec_a, 3, 4);`            | no (moves elements)     |
+| remove item at index `3` from `vec_a`        |`vector_remove(&vec_a, 3);`              | no (moves elements)     |
 | get the number of items in `vec_a`           |`int num_items = vector_size(vec_a);`    | no                      |
 | get the amount of allocated memory in `vec_a`|`int alloc_amt = vector_alloc(vec_a);`   | no                      |
 
@@ -140,8 +140,8 @@ Because the Visual Studio C compiler doesn't support the `typeof` operator, whic
 | create a vector                              |`type* vec_a = vector_create();`         | N/A                     |
 | add `item` to the vector `vec_a`             |`vector_add(&vec_a, type) = item;`       | yes                     |
 | insert `item` into `vec_a` at index `9`      |`vector_insert(&vec_a, type, 9) = item;` | yes                     |
-| erase `4` items from `vec_a` at index `3`    |`vector_erase(vec_a, type, 3, 4);`       | no (moves elements)     |
-| remove item at index `3` from `vec_a`        |`vector_remove(vec_a, type, 3);`         | no (moves elements)     |
+| erase `4` items from `vec_a` at index `3`    |`vector_erase(&vec_a, type, 3, 4);`      | no (moves elements)     |
+| remove item at index `3` from `vec_a`        |`vector_remove(&vec_a, type, 3);`        | no (moves elements)     |
 | get the number of items in `vec_a`           |`int num_items = vector_size(vec_a);`    | no                      |
 | get the amount of allocated memory in `vec_a`|`int alloc_amt = vector_alloc(vec_a);`   | no                      |
 
