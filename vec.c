@@ -77,6 +77,7 @@ void* _vector_insert(vector* vec_addr, vec_type_t type_size, vec_size_t pos)
 	if (!vector_has_space(v_data))
 	{
 		v_data = vector_realloc(v_data, type_size);
+		*vec_addr = v_data->buff;
 	}
 	memmove(&v_data->buff[(pos + 1) * type_size],
 		&v_data->buff[pos * type_size],
