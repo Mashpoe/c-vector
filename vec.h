@@ -50,9 +50,9 @@ typedef char* vec_char;
 
 // vec is a vector (aka type*)
 #define vector_erase(vec, pos, len)                                            \
-	(_vector_erase((vector*)vec, sizeof(*vec), pos, len))
+	(_vector_erase((vector*)&vec, sizeof(*vec), pos, len))
 #define vector_remove(vec, pos)                                                \
-	(_vector_remove((vector*)vec, sizeof(*vec), pos))
+	(_vector_remove((vector*)&vec, sizeof(*vec), pos))
 
 #define vector_copy(vec) (_vector_copy((vector*)vec, sizeof(*vec)))
 
