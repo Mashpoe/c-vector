@@ -18,7 +18,8 @@ struct vector_data
 
 vector_data* vector_alloc(vec_size_t alloc, vec_size_t size)
 {
-	vector_data* v_data = malloc(sizeof(vector_data) + alloc * size);
+	vector_data* v_data = (vector_data*)
+		malloc(sizeof(vector_data) + alloc * size);
 	v_data->alloc = alloc;
 	return v_data;
 }
@@ -27,7 +28,7 @@ vector_data* vector_get_data(vector vec) { return &((vector_data*)vec)[-1]; }
 
 vector vector_create(void)
 {
-	vector_data* v = malloc(sizeof(vector_data));
+	vector_data* v = (vector_data*)malloc(sizeof(vector_data));
 	v->alloc = 0;
 	v->length = 0;
 
@@ -43,7 +44,7 @@ vec_size_t vector_get_alloc(vector vec) { return vector_get_data(vec)->alloc; }
 vector_data* vector_realloc(vector_data* v_data, vec_type_t type_size)
 {
 	vec_size_t new_alloc = (v_data->alloc == 0) ? 1 : v_data->alloc * 2;
-	vector_data* new_v_data =
+	vector_data* new_v_data = (vector_data*)
 	    realloc(v_data, sizeof(vector_data) + new_alloc * type_size);
 	new_v_data->alloc = new_alloc;
 	return new_v_data;
@@ -111,7 +112,7 @@ vector _vector_copy(vector vec, vec_type_t type_size)
 {
 	vector_data* vec_data = vector_get_data(vec);
 	size_t alloc_size = sizeof(vector_data) + vec_data->length * type_size;
-	vector_data* v = malloc(alloc_size);
+	vector_data* v = (vector_data*)malloc(alloc_size);
 	memcpy(v, vec_data, alloc_size);
 	return (void*)&v->buff;
 }
