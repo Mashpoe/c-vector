@@ -4,7 +4,7 @@
 //  Created by Mashpoe on 2/26/19.
 //
 
-#include "vec.h"
+#include "c-vector/vec.h"
 #include <string.h>
 
 typedef struct vector_data vector_data;
