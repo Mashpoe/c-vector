@@ -34,6 +34,12 @@ typedef char* vec_char;
 #define vector_insert(vec_addr, pos, value)                                    \
 	(*vector_insert_asg(vec_addr, pos) = value)
 
+// vec is a vector (aka type*)
+#define vector_erase(vec, pos, len)                                            \
+	(_vector_erase((vector*)vec, sizeof(*vec), pos, len))
+#define vector_remove(vec, pos)                                                \
+	(_vector_remove((vector*)vec, sizeof(*vec), pos))
+
 #else
 
 #define vector_add_asg(vec_addr, type)                                         \
@@ -46,13 +52,13 @@ typedef char* vec_char;
 #define vector_insert(vec_addr, type, pos, value)                              \
 	(*vector_insert_asg(vec_addr, type, pos) = value)
 
-#endif
-
 // vec is a vector (aka type*)
-#define vector_erase(vec, pos, len)                                            \
-	(_vector_erase((vector*)vec, sizeof(*vec), pos, len))
-#define vector_remove(vec, pos)                                                \
-	(_vector_remove((vector*)vec, sizeof(*vec), pos))
+#define vector_erase(vec, type, pos, len)                                            \
+	(_vector_erase((vector*)vec, sizeof(type), pos, len))
+#define vector_remove(vec, type, pos)                                                \
+	(_vector_remove((vector*)vec, sizeof(type), pos))
+
+#endif
 
 #define vector_copy(vec) (_vector_copy((vector*)vec, sizeof(*vec)))
 
