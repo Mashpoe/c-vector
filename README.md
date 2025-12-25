@@ -30,6 +30,18 @@ vector_add(&char_vec, 'a');
 
 // print the item from the vector
 printf("first item: %c\n", char_vec[0]);
+
+// add elements in array
+const char s[] = " test with char vector"
+vector_add_arr(&char_vec, s, sizeof(s));
+
+// insert elements in array
+const char s2[] = "(inserting)"
+int insert_pos = sizeof("a test with");// a trick about indexing a string
+vector_insert_arr(&char_vec, insert_pos, s2, strlen(s2));
+
+// print the char vector as string(char*)
+printf("full char vector: \"%s\"\n", char_vec);
 ```
 
 Vectors require that their pointer type corresponds to the contents of the vector (e.g. `int*` for a vector containing `int`s); otherwise, you have to explicitly cast the vector pointer to the correct type when accessing elements or making library calls:
@@ -39,6 +51,11 @@ Vectors require that their pointer type corresponds to the contents of the vecto
 int* foo = vector_create();
 
 vector_add(&foo, 5);
+
+vector_add_multiple(&foo, 5, 6, 8);
+
+int insert_pos = 2;
+vector_insert_multiple(&foo, insert_pos, -15, -61, -78);
 
 // reassignment
 foo[0] = 3;
@@ -117,7 +134,7 @@ The *recommended* way to differentiate between vectors and arrays is to simply n
 
 # What About Structures?
 
-If you have a vector storing some kind of structure, you can't initialize new elements of the vector like you would a variable, e.g. `{ a, b, c }`. To get around this, there's a set of special macros that allow for more control over element initialization.
+If you have a vector storing some kind of structure, you can't initialize new elements of the vector like you would a variable, e.g. `{ a, b, c }`. To get around this in regular way, there's a set of special macros that allow for more control over element initialization.
 
 Here is an example:
 
@@ -132,6 +149,40 @@ temp->a = 1;
 temp->b = 2;
 temp->c = 3;
 temp = NULL; // stop using temp now that the element is initialized
+
+// add multiple structs
+foo* temps = vector_add_dst_multiple(&foo_vec, 2);
+temps[0].a = 1;
+temps[0].b = 2;
+temps[0].c = 3;
+temps[1].a = 6;
+temps[1].b = 9;
+temps[1].c = 7;
+temps = NULL;
+```
+
+However, the implementation of `vector_add_multiple`,`vector_add_arr`,`vector_insert_multiple`,`vector_insert_arr` uses **memcopy**, so they support add/insert structs to the vector simply by copying data. 
+
+For example:
+```c
+typedef struct { ... } foo;
+
+foo* foo_vec = vector_create();
+
+foo a = {1,2,3}, b = {12,54,32};
+
+// add structs
+// parsing in the pointer of item and the count "1" to pretend it's an array.
+vector_add_arr(&foo_vec, &a, 1);
+vector_add_multiple(&foo_vec, a);
+vector_add_multiple(&foo_vec, (foo){-1,-2,-3}, (foo){4,5,6});
+
+// insert structs
+int insert_pos = 1;
+vector_insert_multiple(&foo_vec, insert_pos, b);
+vector_insert_multiple(&foo_vec, insert_pos, (foo){-31,-442,-31}, (foo){1234,222,611});
+
+vector_free(foo_vec);
 ```
 
 # Reference Sheet
@@ -145,7 +196,11 @@ Some functions and macros take a normal vector argument, e.g. `vec`, while other
 | create a vector                         | `type* vec = vector_create();`             | N/A                     |
 | free a vector                           | `vector_free(vec);`                        | N/A                     |
 | add `item` to the vector `vec`          | `vector_add(&vec, item);`                  | yes                     |
+| add multiple items to the vector `vec`  | `vector_add_multiple(&vec, item1, item2, ...);`   | yes              |
+| add `count` elements in `array` to the vector `vec` | `vector_add_arr(&vec, array, count);` | yes              |
 | insert `item` into `vec` at index `9`   | `vector_insert(&vec, 9, item)`             | yes                     |
+| insert multiple items to the vector `vec` at index `9` | `vector_insert_multiple(&vec, 9, item1, item2, ...);`    | yes |
+| insert `count` elements in `array` to the vector `vec` at index `5` | `vector_insert_arr(&vec, 5, array, count);` | yes |
 | erase `4` items from `vec` at index `3` | `vector_erase(vec, 3, 4);`                 | no (moves elements)     |
 | remove item at index `3` from `vec`     | `vector_remove(vec, 3);`                   | no (moves elements)     |
 | remove last item from `vec`             | `vector_pop(vec);`                         | no                      |
@@ -164,7 +219,11 @@ Because some compilers don't support the `typeof` operator, which is used for st
 | Action                                  | Code                                             | Changes vector address? |
 |-----------------------------------------|--------------------------------------------------|-------------------------|
 | add `item` to the vector `vec`          | `vector_add(&vec, type) = item;`                 | yes                     |
+| add multiple items to the vector `vec`  | `vector_add_multiple(&vec, type, item1, item2, ...);`   | yes              |
+| add `count` elements in `array` to the vector `vec` | `vector_add_arr(&vec, type, array, count);` | yes              |
 | insert `item` into `vec` at index `9`   | `vector_insert(&vec, type, 9) = item;`           | yes                     |
+| insert multiple items to the vector `vec` at index `9` | `vector_insert_multiple(&vec, type, 9, item1, item2, ...);`    | yes |
+| insert `count` elements in `array` to the vector `vec` at index `5` | `vector_insert_arr(&vec, type, 5, array, count);` | yes |
 | erase `4` items from `vec` at index `3` | `vector_erase(vec, type, 3, 4);`                 | no (moves elements)     |
 | remove item at index `3` from `vec`     | `vector_remove(vec, type, 3);`                   | no (moves elements)     |
 | add `item` to the vector `vec`          | `type* temp = vector_add_dst(&vec, type);`       | yes                     |
