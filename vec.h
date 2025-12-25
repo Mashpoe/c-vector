@@ -52,6 +52,10 @@ typedef size_t vec_size_t;
 // number of bytes for a type
 typedef size_t vec_type_t;
 
+// create a temporary array in C99 "Compound Literals" feature
+// to support adding multiple elements.
+#define vector_mkarr(type, ...) (type[]){__VA_ARGS__}
+
 // TODO: more rigorous check for typeof support with different compilers
 #if _MSC_VER == 0 || __STDC_VERSION__ >= 202311L || defined __cpp_decltype
 
@@ -62,26 +66,69 @@ typedef size_t vec_type_t;
 	((typeof(*vec_addr))(\
 	    _vector_add_dst((vector*)vec_addr, sizeof(**vec_addr))\
 	))
+#define vector_add_dst_multiple(vec_addr, count)\
+	((typeof(*vec_addr))(\
+	    _vector_add_dst_multiple((vector*)vec_addr, sizeof(**vec_addr), count)\
+	))
 #define vector_insert_dst(vec_addr, pos)\
 	((typeof(*vec_addr))(\
 	    _vector_insert_dst((vector*)vec_addr, sizeof(**vec_addr), pos)))
+#define vector_insert_dst_multiple(vec_addr, pos, count)\
+	((typeof(*vec_addr))(\
+	    _vector_insert_dst_multiple((vector*)vec_addr, sizeof(**vec_addr), pos, count)))
 
 #define vector_add(vec_addr, value)\
 	(*vector_add_dst(vec_addr) = value)
+#define vector_add_multiple(vec_addr, ...)\
+	memcpy(\
+	    vector_add_dst_multiple(  vec_addr, sizeof(vector_mkarr(typeof(**vec_addr), __VA_ARGS__))/sizeof(**vec_addr)  ),\
+	    vector_mkarr(typeof(**vec_addr), __VA_ARGS__),\
+	    sizeof(vector_mkarr(typeof(**vec_addr), __VA_ARGS__))\
+	)
+#define vector_add_arr(vec_addr, arrptr, count)\
+	memcpy(vector_add_dst_multiple(vec_addr, count), arrptr, (count) * sizeof(**vec_addr))
 #define vector_insert(vec_addr, pos, value)\
 	(*vector_insert_dst(vec_addr, pos) = value)
+#define vector_insert_multiple(vec_addr, pos, ...)\
+	memcpy(\
+	    vector_insert_dst_multiple(  vec_addr, pos, sizeof(vector_mkarr(typeof(**vec_addr), __VA_ARGS__))/sizeof(**vec_addr)  ),\
+	    vector_mkarr(typeof(**vec_addr), __VA_ARGS__),\
+	    sizeof(vector_mkarr(typeof(**vec_addr), __VA_ARGS__))\
+	)
+#define vector_insert_arr(vec_addr, pos, arrptr, count)\
+	memcpy( vector_insert_dst_multiple(  vec_addr, pos, count  ), arrptr, (count)*sizeof(**vec_addr) )
 
 #else
 
 #define vector_add_dst(vec_addr, type)\
 	((type*)_vector_add_dst((vector*)vec_addr, sizeof(type)))
+#define vector_add_dst_multiple(vec_addr, type, count)\
+	((type*)_vector_add_dst_multiple((vector*)vec_addr, sizeof(type), count))
 #define vector_insert_dst(vec_addr, type, pos)\
 	((type*)_vector_insert_dst((vector*)vec_addr, sizeof(type), pos))
+#define vector_insert_dst_multiple(vec_addr, type, pos, count)\
+	((type*)_vector_insert_dst_multiple((vector*)vec_addr, sizeof(type), pos, count))
 
 #define vector_add(vec_addr, type, value)\
 	(*vector_add_dst(vec_addr, type) = value)
+#define vector_add_multiple(vec_addr, type, ...)\
+	memcpy(\
+	    vector_add_dst_multiple(  vec_addr, type, sizeof(vector_mkarr(type, __VA_ARGS__))/sizeof(type)  ),\
+	    vector_mkarr(type, __VA_ARGS__),\
+	    sizeof(vector_mkarr(type, __VA_ARGS__))\
+	)
+#define vector_add_arr(vec_addr, type, listptr, count)\
+	memcpy(vector_add_dst_multiple(vec_addr, type, count), listptr, (count) * sizeof(type))
 #define vector_insert(vec_addr, type, pos, value)\
 	(*vector_insert_dst(vec_addr, type, pos) = value)
+#define vector_insert_multiple(vec_addr, type, pos, ...)\
+	memcpy(\
+	    vector_insert_dst_multiple(  vec_addr, type, pos, sizeof(vector_mkarr(typeof(type), __VA_ARGS__))/sizeof(type)  ),\
+	    vector_mkarr(typeof(type), __VA_ARGS__),\
+	    sizeof(vector_mkarr(typeof(type), __VA_ARGS__))\
+	)
+#define vector_insert_arr(vec_addr, type, pos, arrptr, count)\
+	memcpy( vector_insert_dst_multiple(  vec_addr, type, pos, count  ), arrptr, (count)*sizeof(type) )
 
 #endif
 
@@ -103,7 +150,11 @@ void vector_free(vector vec);
 
 void* _vector_add_dst(vector* vec_addr, vec_type_t type_size);
 
+void* _vector_add_dst_multiple(vector* vec_addr, vec_type_t type_size, vec_size_t reuire_count);
+
 void* _vector_insert_dst(vector* vec_addr, vec_type_t type_size, vec_size_t pos);
+
+void* _vector_insert_dst_multiple(vector* vec_addr, vec_type_t type_size, vec_size_t pos, vec_size_t reuire_count);
 
 void _vector_erase(vector vec_addr, vec_type_t type_size, vec_size_t pos, vec_size_t len);
 

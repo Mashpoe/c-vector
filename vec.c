@@ -71,6 +71,22 @@ bool vector_has_space(vector_header* h)
 	return h->capacity - h->size > 0;
 }
 
+vector_header* vector_realloc_require(vector_header* h, vec_type_t type_size, vec_size_t reuire_count)
+{
+	vec_size_t new_capacity = (h->capacity == 0) ? 1 : h->capacity * 2;
+	while (new_capacity < reuire_count) new_capacity *= 2;
+	
+	vector_header* new_h = (vector_header*)realloc(h, sizeof(vector_header) + new_capacity * type_size);
+	new_h->capacity = new_capacity;
+
+	return new_h;
+}
+
+bool vector_has_multiple_space(vector_header* h,vec_size_t reuire_count)
+{
+	return h->capacity - h->size >= reuire_count;
+}
+
 void* _vector_add_dst(vector* vec_addr, vec_type_t type_size)
 {
 	vector_header* h = vector_get_header(*vec_addr);
@@ -82,6 +98,22 @@ void* _vector_add_dst(vector* vec_addr, vec_type_t type_size)
 	}
 
 	return &h->data[type_size * h->size++];
+}
+
+void* _vector_add_dst_multiple(vector* vec_addr, vec_type_t type_size, vec_size_t reuire_count)
+{
+	vector_header* h = vector_get_header(*vec_addr);
+
+	if (!vector_has_multiple_space(h, reuire_count))
+	{
+		h = vector_realloc_require(h, type_size, reuire_count);
+		*vec_addr = h->data;
+	}
+
+	// return &h->data[type_size * h->size++];
+	void* ptr=&h->data[type_size * h->size];
+	h->size+=reuire_count;
+	return ptr;
 }
 
 void* _vector_insert_dst(vector* vec_addr, vec_type_t type_size, vec_size_t pos)
@@ -98,6 +130,28 @@ void* _vector_insert_dst(vector* vec_addr, vec_type_t type_size, vec_size_t pos)
 	}
 	// move trailing elements
 	memmove(&h->data[(pos + 1) * type_size],
+		&h->data[pos * type_size],
+		(h->size - pos) * type_size);
+
+	h->size = new_length;
+
+	return &h->data[pos * type_size];
+}
+
+void* _vector_insert_dst_multiple(vector* vec_addr, vec_type_t type_size, vec_size_t pos, vec_size_t reuire_count)
+{
+	vector_header* h = vector_get_header(*vec_addr);
+
+	vec_size_t new_length = h->size + reuire_count;
+
+	// make sure there is enough room for the new element
+	if (!vector_has_multiple_space(h, reuire_count))
+	{
+		h = vector_realloc_require(h, type_size, reuire_count);
+		*vec_addr = h->data;
+	}
+	// move trailing elements
+	memmove(&h->data[(pos + reuire_count) * type_size],
 		&h->data[pos * type_size],
 		(h->size - pos) * type_size);
 
