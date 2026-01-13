@@ -169,3 +169,15 @@ Because some compilers don't support the `typeof` operator, which is used for st
 | remove item at index `3` from `vec`     | `vector_remove(vec, type, 3);`                   | no (moves elements)     |
 | add `item` to the vector `vec`          | `type* temp = vector_add_dst(&vec, type);`       | yes                     |
 | insert `item` into `vec` at index `9`   | `type* temp = vector_insert_dst(&vec, type, 9);` | yes                     |
+
+# CMake Integration
+You can easily use `c-vector` in your [CMake](https://cmake.org) project. Clone the repository and run the following command:
+```shell
+cmake -Bbuild -GNinja
+```
+This builds the project in your directory of choice, which is `build/` here, with your build system of choice, which is [Ninja](https://ninja-build.org) here. You can use it with any directory or build system, but the following is a Ninja example:
+```shell
+ninja build
+ninja install
+```
+You can also specify whether you want to build as a shared or static library, installation directories, etc. using `-D` flags. Consult the CMake documentation for how to do that.
